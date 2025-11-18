@@ -10,7 +10,7 @@ This repository contains tools and workflows to measure the inclination and othe
 
 The code is designed to be used both as a Python package and through Jupyter notebooks for exploratory analysis and figure generation.
 
-Applying the methods outlined in [InclinationSample.ipynb](sandbox/InclinationSample.ipynb) and [PaperPlots.ipynb](PaperPlots.ipynb), you can compare any .fits galaxy image and analyse its orientation visually producing a graph similar to the figure below. Applying `galaxymorphology' to a single file or a set of files reproduces a table of corresponding measurements.
+Applying the methods outlined in [HowTo.ipynb](SGA_catalogue/HowTo.ipynb) and [PaperPlots.ipynb](PaperPlots.ipynb), you can compare any .fits galaxy image and analyse its orientation visually producing a graph similar to the figure below. Applying `galaxymorphology' to a single file or a set of files reproduces a table of corresponding measurements.
 
 ![Inclination comparison](PlotsPaper/4panel_NGC3067.pdf "Inclination comparison: FLEX vs catalog via SGA")
 
