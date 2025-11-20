@@ -48,7 +48,6 @@ The repository is sectioned as follows:
 ```bash
 git clone https://github.com/ObservationalExpansions/Galaxy-Morphology.git
 cd Galaxy-Morphology
-***what happens next to find galaxy morphology function????????
 pip install .
 
 ```
