@@ -24,7 +24,7 @@ The repository is sectioned as follows:
 
 [`PlotsPaper`](PlotsPaper) folder contains the relevant plots for the paper
 
-[`PaperPlots`](PaperPlots.ipynb) file contains instructions on producing the small sample analysis and disc generation
+[`PaperPlots.ipynb`](PaperPlots.ipynb) file contains instructions on producing the small sample analysis and disc generation
 
 [`src`](src) folder contains the `galaxymorphology` function
 
