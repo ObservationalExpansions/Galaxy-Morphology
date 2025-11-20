@@ -42,8 +42,7 @@ The repository is sectioned as follows:
 ---
 
 ## Installation
-
-1. **Clone the repository**
+**Clone the repository and install package**
 
 ```bash
 git clone https://github.com/ObservationalExpansions/Galaxy-Morphology.git
