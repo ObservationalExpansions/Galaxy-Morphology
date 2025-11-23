@@ -95,7 +95,7 @@ def determine_background_radius(R, I, noisefloor, window_size=100):
     R : array-like, shape (N,)
         Radial coordinates for each pixel/sample. Will be sorted internally; values may be any real numbers.
     I : array-like, shape (N,)
-        Intensity values corresponding to R. Values should be positive for the logarithm; zeros or negatives will produce -inf or runtime warnings.
+        Intensity values corresponding to R. Values should be positive for the logarithm; zeros or negatives replaced with NaN to avoid -inf or runtime warnings.
     noisefloor : float
         Threshold applied to np.log(smoothed_intensity). The function returns the radius corresponding to the first smoothed bin whose log(intensity) is below this threshold.
     window_size : int, optional
@@ -118,6 +118,13 @@ def determine_background_radius(R, I, noisefloor, window_size=100):
     >>> I = np.exp(-R/20) + 0.001 * np.random.randn(1000)
     >>> determine_background_radius(R, I, noisefloor=-7.0)
     """
+    assert isinstance(R, np.ndarray), "R must be a numpy array"
+    assert isinstance(I, np.ndarray), "I must be a numpy array"
+    assert R.ndim == I.ndim == 1, "R and I must be 1D arrays"
+    assert len(R) == len(I), "R and I must have the same length"
+    assert np.nanmin(R) >= 0, "R must be exclusively non-negative values"
+    assert window_size > 0 and isinstance(window_size, int), "window_size must be a positive integer"
+    assert window_size <= len(R), "window_size must be less than or equal to the length of R and I"
 
     # sort by radius for fit
     rindx = R.argsort()
@@ -127,11 +134,17 @@ def determine_background_radius(R, I, noisefloor, window_size=100):
     # generate a moving average
     means_R = np.convolve(R_sorted, np.ones(window_size)/window_size, mode='valid')
     means_I = np.convolve(I_sorted, np.ones(window_size)/window_size, mode='valid')
-    
+    means_I = np.where(means_I <= 0, np.nan, means_I)  # avoid log of non-positive numbers
     # set the floor for noise
-    # if this fails, fall back to half image size
+    # if this fails, fall back to R.max()
     try:
         maxrad = means_R[np.where(np.log(means_I) < noisefloor)[0][0]]
+        # handle edge case where first value is zero, try the next bigger radius
+        if maxrad == 0.0:
+            try:
+                maxrad = means_R[np.where(np.log(means_I) < noisefloor)[0][1]]
+            except:
+                maxrad = np.nanmax(R)
     except:
         maxrad = np.nanmax(R)
 
@@ -153,7 +166,6 @@ def galaxymorphology(file,galaxy=None,data=None,noisefloor=-5.):
 
             wcs = WCS(hdulist[1].header)
             pixel_coords = wcs.world_to_pixel_values(ra, dec)
-            #print("Pixel coordinates (x, y):", pixel_coords)
         
     galaxy_name = file.split("-")[0]
     h, w = image_data.shape
@@ -168,7 +180,6 @@ def galaxymorphology(file,galaxy=None,data=None,noisefloor=-5.):
     radius=h//4
 
     y, x = np.indices((h,w))
-    mask = (x - cx)**2 + (y - cy)**2 <= radius**2
 
     # compute the cartesian pixel coordinates relative to center
     X2,Y2 = (x-cx), (y-cy)
@@ -177,11 +188,11 @@ def galaxymorphology(file,galaxy=None,data=None,noisefloor=-5.):
     R = np.sqrt(X2**2 + Y2**2).ravel()
     I = image_data.ravel()
 
-    valid = (I > 0) & (R <= radius)
-    R_valid = R[valid]
-    I_valid = I[valid]
+    valid_ = (I > 0) & (R <= radius)
+    R_valid_ = R[valid_]
+    I_valid_ = I[valid_]
 
-    maxrad = determine_background_radius(R_valid, I_valid, noisefloor)
+    maxrad = determine_background_radius(R_valid_, I_valid_, noisefloor)
     
     valid = (I > 0) & (R <= maxrad)
     R_valid = R[valid]
@@ -189,7 +200,9 @@ def galaxymorphology(file,galaxy=None,data=None,noisefloor=-5.):
    
     # Linear regression
     slope, intercept, r_value, p_value, std_err = linregress(R_valid, logI_valid)
+    assert slope != 0, "Slope of linear regression is zero, cannot compute scale length."
     scale_length = -1 / slope
+    assert scale_length > 0, "Computed scale length is not positive."
 
     # we might want to check for bogus values here: but we can catch these on return as well
     
@@ -200,7 +213,7 @@ def galaxymorphology(file,galaxy=None,data=None,noisefloor=-5.):
 
     mmax, nmax = 2, 10
 
-    afacs = np.array([0.75,1., 1.5, 2.0, 2.5, 3.0])
+    afacs = np.array([0.75,1.0, 1.5, 2.0, 2.5, 3.0])
     etalist = np.zeros([3,len(afacs)])
     palist = np.zeros([2,len(afacs)])
     for i, afac in enumerate(afacs):
