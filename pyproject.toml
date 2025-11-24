@@ -19,6 +19,9 @@ requires-python = ">=3.9"
 dependencies = [
   "numpy>=1.17,<2.0",
   "scipy>=1.9,<2.0",
+  "astropy>=7.1.1",
+  "scipy>=1.16.3",
+  "flex"
 ]
 keywords = ["python","basis functions"]
 classifiers = [
