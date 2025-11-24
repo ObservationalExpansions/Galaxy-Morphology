@@ -18,10 +18,9 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
   "numpy>=1.17,<2.0",
-  "scipy>=1.9,<2.0",
+  "scipy",
   "astropy",
-  "scipy>=1.16.3",
-  "flex@https://github.com/ObservationalExpansions/flex.git"
+  "scipy>=1.16.3"
 ]
 keywords = ["python","basis functions"]
 classifiers = [
