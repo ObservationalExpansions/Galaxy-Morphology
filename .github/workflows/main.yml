@@ -26,7 +26,7 @@ jobs:
       - name: Test with pytest  
         run: |  
           coverage run -m pytest  -v -s  
-      - name: Upload coverage to Coveralls
-        run: coveralls --service=github
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.3.6
+        env: 
+          GITHUB-TOKEN: ${{ secrets.GITHUB_TOKEN }}
