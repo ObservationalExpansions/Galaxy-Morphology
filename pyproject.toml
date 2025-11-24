@@ -4,8 +4,7 @@ requires = [
   "setuptools_scm>=8",
   "wheel",
   "numpy>=1.17,<2.0",
-  "astropy>=7.1.1",
-  "flex@https://github.com/ObservationalExpansions/flex.git"
+  "astropy>=7.1.1"
 ]
 build-backend = "setuptools.build_meta"
 
