@@ -26,15 +26,24 @@ def test_FindInc2():
     #testing non-finite inputs raises ValueError
     with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(np.inf, test_A, test_B, test_C, test_D)
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(test_eta, np.inf, test_B, test_C, test_D)
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(test_eta, test_A, np.inf, test_C, test_D)
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(test_eta, test_A, test_B, np.inf, test_D)
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(test_eta, test_A, test_B, test_C, np.inf)
-        #now nans 
+    #now nans
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(np.nan, test_A, test_B, test_C, test_D)
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(test_eta, np.nan, test_B, test_C, test_D)
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(test_eta, test_A, np.nan, test_C, test_D)
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(test_eta, test_A, test_B, np.nan, test_D)
+    with pytest.raises(ValueError):
         test_inc = morphology.FindInc2(test_eta, test_A, test_B, test_C, np.nan)
         
     #test some normal case
@@ -55,7 +64,9 @@ def test_determine_background_radius():
     #testing invalid window_size values
     with pytest.raises(ValueError):
         morphology.determine_background_radius(R, I, noisefloor, window_size=0)
+    with pytest.raises(ValueError):
         morphology.determine_background_radius(R, I, noisefloor, window_size=100.01)
+    with pytest.raises(ValueError):
         morphology.determine_background_radius(R, I, noisefloor, window_size=1001)
     #testing edge case where no values fall below noisefloor
     I_ = np.ones_like(I)
@@ -68,9 +79,10 @@ def test_determine_background_radius():
     #testing cases where R, I are not 1D arrays or are different sizes
     with pytest.raises(ValueError):
         morphology.determine_background_radius(R.reshape(1000,1), I, noisefloor, window_size=window_size)
+    with pytest.raises(ValueError):
         morphology.determine_background_radius(R, I.reshape(1000,1), noisefloor)
+    with pytest.raises(ValueError):
         morphology.determine_background_radius(R[:-1], I, noisefloor)
-
 #need to write test for galaxymorphology function with a sample FITS file and mock data...
 
 
